@@ -13,18 +13,38 @@ const server = http.createServer((req, res) => {
     const url = req.url;
     if (url === '/') {
         res.write('<html>');
-        res.write('<head><title>Ender Message</title></head>');
+        res.write('<head><title>Enter Message</title></head>');
         res.write('<body><form action="/message" method="POST"><input type="text" name="message"></body>');
         res.write('</html>');
         return res.end()
     }
 
     // This lets us write a file and include that in the response. It also redirects the user after the file is sent, setting res.statusCode to 302 (for redirect) and invoking res.setHeader with 'Location' and the url we want to redirect to.
+    const method = req.method;
     if (url === '/message' && method === 'POST') {
-        fs.writeFileSync('message.txt', 'DUMMY');
-        res.statusCode = 302;
-        res.setHeader('Location', '/');
-        return res.end()
+        
+        // In Node.js, a request is read in 'chunks', multiple parts that can be dealt with before the full request is read. To deal with these chunks, we use a construct called a 'buffer' that allows us to stop chunks and do something with them before they are fully parsed.
+        // The .on() method will listen for certain events, e.g. 'data' (which is fired whenever a new 'chunk' is ready to be read). It receives as arguments the type of event and a listener function that executes some action.
+        const body = [];
+        req.on('data', (chunk) => {
+            console.log(chunk)
+            body.push(chunk)
+        });
+
+        // This is where we do something with the data we've extracted from the chunks. We create a 'Buffer' object, which is available globally, and add to it the body array we created earlier, then convert to a string using .toString()
+        req.on('end', () => {
+            const parsedBody = Buffer.concat(body).toString()
+            const message = parsedBody.split('=')[1];
+            fs.writeFileSync('message.txt', message);
+            res.statusCode = 302;
+            res.setHeader('Location', '/');
+            return res.end()
+        })
+
+        // fs.writeFileSync('message.txt', 'DUMMY');
+        // res.statusCode = 302;
+        // res.setHeader('Location', '/');
+        // return res.end()
     }
 
     // This is a long (and suboptimal!) way of creating a response. res.setHeader() is used to create and set a response header, e.g. a cookie or a content type. res.write() is used to write information to be included in the request body, e.g. HTML. res.end() is used to mark the end of a response.
