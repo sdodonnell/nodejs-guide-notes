@@ -1,5 +1,7 @@
 // This line imports the http protocol and stores it for use later.
 const http = require('http');
+// This imports the module responsible for working with the local file system.
+const fs = require('fs');
 
 // This creates the server and specifies what to do with the request and/or response.
 const server = http.createServer((req, res) => {
@@ -14,6 +16,14 @@ const server = http.createServer((req, res) => {
         res.write('<head><title>Ender Message</title></head>');
         res.write('<body><form action="/message" method="POST"><input type="text" name="message"></body>');
         res.write('</html>');
+        return res.end()
+    }
+
+    // This lets us write a file and include that in the response. It also redirects the user after the file is sent, setting res.statusCode to 302 (for redirect) and invoking res.setHeader with 'Location' and the url we want to redirect to.
+    if (url === '/message' && method === 'POST') {
+        fs.writeFileSync('message.txt', 'DUMMY');
+        res.statusCode = 302;
+        res.setHeader('Location', '/');
         return res.end()
     }
 
