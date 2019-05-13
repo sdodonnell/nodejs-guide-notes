@@ -35,10 +35,14 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             const parsedBody = Buffer.concat(body).toString()
             const message = parsedBody.split('=')[1];
-            fs.writeFileSync('message.txt', message);
-            res.statusCode = 302;
-            res.setHeader('Location', '/');
-            return res.end()
+            // As opposed to .writeFile(), .writeFileSync() will block other code until the file is written.
+            // fs.writeFileSync('message.txt', message);
+            // With .writeFile(), you also pass in a callback that will execute code once the file has been written -- a good example of the event-driven architecture of Node.js.
+            fs.writeFile('message.txt', message, err => {
+                res.statusCode = 302;
+                res.setHeader('Location', '/');
+                return res.end()
+            })
         })
 
         // fs.writeFileSync('message.txt', 'DUMMY');
