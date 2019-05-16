@@ -7,6 +7,9 @@ const app = express();
 
 app.use(bodyParser.urlencoded());
 
+// We can add middleware via express.static() that allows the app access to local files (e.g. stylesheets).
+app.use(express.static(path.join(__dirname, 'public')));
+
 // We can plug in other routes using app.use() and passing in an exported module from another file. Make sure to import the files and save them as variables.
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
