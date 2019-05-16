@@ -13,11 +13,18 @@ app.use((req, res, next) => {
     next();
 });
 
+/*
 app.use((req, res, next) => {
     console.log('In the second middleware!');
     // One thing we can do from middleware is send a response using res.send(). We can pass in html strings (as with res.write()) and the header will be set with text/html as content-type.
-    res.send()
+    res.send("<html><h1>Hello from Express.js!</h1></html>")
 });
+*/
+
+// app.use() takes an optional "path" argument before the callback that will determine if the callback gets executed (based on whether the path matches). If you include next() in all middleware, the request will hit every middleware that matches the path (e.g. a request to "/" would match both "/users" and "/"). If next() is neglected, it will hit only the first matching middleware.
+app.use("/", (req, res, next) => {
+
+})
 
 const server = http.createServer(app);
 
