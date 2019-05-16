@@ -1,29 +1,21 @@
 const http = require('http');
-
-// Import Express here. Express is imported as a function.
 const express = require('express');
+const bodyParser = require('body-parser');
 
-// Running express as a function will create a request handler that can be passed into the http.createServer() function below.
 const app = express();
 
-// app.use() is used for including middleware that lies between request and response. .use() accepts a set of request handlers. Callback must include three parameters: request, response, and next; next stands for a function that will be passed in by Express.js. Next will be used to move from one middleware to the next. We must either call next to move on to the next middleware OR send some kind of a response.
+app.use(bodyParser.urlencoded());
+
+// We can plug in other routes using app.use() and passing in an exported module from another file. Make sure to import the files and save them as variables.
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+
+app.use(adminRoutes);
+app.use(shopRoutes);
+
+// We can set up a handler for a 404 error by using res.send() with a "Page not found" element, and potentially chaining .status(404) in between.
 app.use((req, res, next) => {
-    console.log('In the middleware!');
-    // We call next() from within .use() to pass on information to the next middleware. If we don't call it, the request will not continue to the next middleware.
-    next();
-});
-
-/*
-app.use((req, res, next) => {
-    console.log('In the second middleware!');
-    // One thing we can do from middleware is send a response using res.send(). We can pass in html strings (as with res.write()) and the header will be set with text/html as content-type.
-    res.send("<html><h1>Hello from Express.js!</h1></html>")
-});
-*/
-
-// app.use() takes an optional "path" argument before the callback that will determine if the callback gets executed (based on whether the path matches). If you include next() in all middleware, the request will hit every middleware that matches the path (e.g. a request to "/" would match both "/users" and "/"). If next() is neglected, it will hit only the first matching middleware.
-app.use("/", (req, res, next) => {
-
+    res.status(404).send('<h1>Page not found</h1>');
 })
 
 const server = http.createServer(app);
