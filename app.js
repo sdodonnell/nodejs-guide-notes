@@ -10,7 +10,8 @@ app.use(bodyParser.urlencoded());
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
-app.use(adminRoutes);
+// We can also use a "filter" that prefixes any route with something else by default. This means that to reach any of the admin routes in the browser, we must prefix them with '/admin'.
+app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
 // We can set up a handler for a 404 error by using res.send() with a "Page not found" element, and potentially chaining .status(404) in between.
