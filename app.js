@@ -1,6 +1,7 @@
 const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
 
@@ -14,9 +15,9 @@ const shopRoutes = require('./routes/shop');
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
-// We can set up a handler for a 404 error by using res.send() with a "Page not found" element, and potentially chaining .status(404) in between.
+// We can set up a handler for a 404 error by using res.send() with a "Page not found" element, and potentially chaining .status(404) in between. UPDATE: Use .sendFile() to send an HTML instead of raw HTML.
 app.use((req, res, next) => {
-    res.status(404).send('<h1>Page not found</h1>');
+    res.status(404).sendFile(path.join(__dirname, 'views', '404.html'))
 })
 
 const server = http.createServer(app);
