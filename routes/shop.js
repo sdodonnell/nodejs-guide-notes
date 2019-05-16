@@ -7,7 +7,7 @@ const path = require('path');
 // Instead of sending raw HTML with res.send(), we can send an HTML file instead with res.sendFile().
 router.get('/', (req, res, next) => {
     // With path.join(), we pass in first __dirname, which is a globally available variable that finds the current folder in your file system (in this case, /routes), and then the specific folder and file name we want to write to.
-    res.sendFile(path.join(__dirname, '../', 'views', 'shop.html'))
+    res.sendFile(path.join(__dirname, '..', 'views', 'shop.html'))
 })
 
 module.exports = router;
