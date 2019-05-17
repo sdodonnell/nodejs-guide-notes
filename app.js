@@ -5,6 +5,11 @@ const path = require('path');
 
 const app = express();
 
+// To use an HTML templating engine, use app.set() and pass in 'view engine' and a string of the appropriate package. Pug, EJS, and Handlebars are good options. You may also have to import the engine and set a directory for the views to be stored in.
+app.set('view engine', 'ejs');
+app.set('views', 'views');
+
+
 app.use(bodyParser.urlencoded());
 
 // We can add middleware via express.static() that allows the app access to local files (e.g. stylesheets).
@@ -19,8 +24,15 @@ app.use('/admin', adminData.router);
 app.use(shopRoutes);
 
 // We can set up a handler for a 404 error by using res.send() with a "Page not found" element, and potentially chaining .status(404) in between. UPDATE: Use .sendFile() to send an HTML instead of raw HTML.
+/*
 app.use((req, res, next) => {
     res.status(404).sendFile(path.join(__dirname, 'views', '404.html'))
+})
+*/
+
+// Instead of rendering an html file, we can render a template that allows us to pass in dynamic data. For this we use the res.render() method and pass in the name of the file and an object that contains any dynamic information we want to pass in.
+app.use((req, res, next) => {
+    res.status(404).render('404', { pageTitle: 'Page Not Found' })
 })
 
 const server = http.createServer(app);
