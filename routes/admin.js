@@ -4,19 +4,14 @@ const path = require('path');
 // Here we set up a sort of "mini Express app" that we can plug into our main one.
 const router = express.Router();
 
+const productsController = require('../controllers/products');
+
 // We use a 'products' array to store the elements of our request when we make a POST request.
 const products = [];
 
-router.get('/add-product', (req, res, next) => {
-    res.render('add-product', { pageTitle: 'Add Product' })
-})
+// We've amended our router get and post functions to include references the the controllers, which hold logic that connects models and views. Previously we rendered .ejs files here directly using res.render().
+router.get('/add-product', productsController.getAddProduct)
 
-router.post('/product', (req, res, next) => {
-    products.push({ title: req.body.title })
-    res.redirect('/');
-})
+router.post('/product', productsController.postAddProduct)
 
-module.exports = {
-    router,
-    products
-};
+module.exports = router
