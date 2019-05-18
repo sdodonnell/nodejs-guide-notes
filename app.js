@@ -10,7 +10,9 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 // We can add middleware via express.static() that allows the app access to local files (e.g. stylesheets).
 app.use(express.static(path.join(__dirname, 'public')));
@@ -31,9 +33,16 @@ app.use((req, res, next) => {
 */
 
 // Instead of rendering an html file, we can render a template that allows us to pass in dynamic data. For this we use the res.render() method and pass in the name of the file and an object that contains any dynamic information we want to pass in.
+/*
 app.use((req, res, next) => {
     res.status(404).render('404', { pageTitle: 'Page Not Found' })
-})
+}
+*/
+
+// Here we place the logic for rendering the 404 page in a controller located at 404.js.
+const errorController = require('./controllers/404');
+
+app.use(errorController.get404)
 
 const server = http.createServer(app);
 
