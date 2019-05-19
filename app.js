@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 */
 
 // Here we place the logic for rendering the 404 page in a controller located at 404.js.
-const errorController = require('./controllers/404');
+const errorController = require('./controllers/error');
 
 app.use(errorController.get404)
 

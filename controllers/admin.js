@@ -1,4 +1,4 @@
-const Product = require('../old_files_with_notes/<8/product');
+const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/add-product', {
