@@ -39,7 +39,7 @@ exports.getCart = (req, res, next) => {
       for (let product of products) {
         const cartProductData = cart.products.find(prod => prod.id === product.id);
         if (cartProductData) {
-          cartProducts.push({productData: product, qty: product.cartProductData.qty})
+          cartProducts.push({productData: product, qty: cartProductData.qty})
         }
       }
       res.render('shop/cart', {
@@ -64,6 +64,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
   Product.findById(productId, product => {
     Cart.deleteProduct(productId, product.price);
   });
+  res.redirect('/cart')
 }
 
 exports.getOrders = (req, res, next) => {
