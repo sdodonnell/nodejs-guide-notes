@@ -2,8 +2,11 @@ const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const mongoose = require('mongoose');
 
 const app = express();
+
+const mongoConnect = require('./util/database');
 
 // To use an HTML templating engine, use app.set() and pass in 'view engine' and a string of the appropriate package. Pug, EJS, and Handlebars are good options. You may also have to import the engine and set a directory for the views to be stored in.
 app.set('view engine', 'ejs');
@@ -44,6 +47,10 @@ const errorController = require('./controllers/error');
 
 app.use(errorController.get404)
 
-const server = http.createServer(app);
-
-server.listen(3000);
+mongoose.connect('mongodb+srv://sam:zJLzyObtqzGvBGsK@cluster0-vjiz9.mongodb.net/test?retryWrites=true')
+  .then(result => {
+      app.listen(3000);
+  })
+  .catch(err => {
+      console.log(err);
+  })

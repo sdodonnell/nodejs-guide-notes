@@ -1,3 +1,4 @@
+/*
 const fs = require('fs');
 const path = require('path');
 
@@ -72,3 +73,14 @@ module.exports = class Product {
     })
   }
 };
+*/
+
+const 
+class Product {
+  constructor(title, price, description, imageUrl) {
+    this.title = title;
+    this.price = price;
+    this.description = description;
+    this.imageUrl = imageUrl;
+  }
+}
