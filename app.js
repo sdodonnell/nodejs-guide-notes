@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 
 const app = express();
 
+const User = require('./models/user');
+
 // To use an HTML templating engine, use app.set() and pass in 'view engine' and a string of the appropriate package. Pug, EJS, and Handlebars are good options. You may also have to import the engine and set a directory for the views to be stored in.
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -21,8 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
     User.findById('5ce460c255c024024ee48355')
       .then(user => {
-          req.user = user;
-          next();
+         req.user = user;
+         next();
       })
       .catch(err => console.log(err))
 });
@@ -53,8 +55,6 @@ app.use((req, res, next) => {
 const errorController = require('./controllers/error');
 
 app.use(errorController.get404);
-
-const User = require('./models/user');
 
 mongoose.connect('mongodb+srv://sam:zJLzyObtqzGvBGsK@cluster0-vjiz9.mongodb.net/test?retryWrites=true')
   .then(result => {
