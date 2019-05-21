@@ -18,6 +18,15 @@ app.use(bodyParser.urlencoded({
 // We can add middleware via express.static() that allows the app access to local files (e.g. stylesheets).
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+    User.findById('5ce460c255c024024ee48355')
+      .then(user => {
+          req.user = user;
+          next();
+      })
+      .catch(err => console.log(err))
+});
+
 // We can plug in other routes using app.use() and passing in an exported module from another file. Make sure to import the files and save them as variables.
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -43,12 +52,25 @@ app.use((req, res, next) => {
 // Here we place the logic for rendering the 404 page in a controller located at 404.js.
 const errorController = require('./controllers/error');
 
-app.use(errorController.get404)
+app.use(errorController.get404);
+
+const User = require('./models/user');
 
 mongoose.connect('mongodb+srv://sam:zJLzyObtqzGvBGsK@cluster0-vjiz9.mongodb.net/test?retryWrites=true')
   .then(result => {
+      User.findOne().then(user => {
+          if (!user) {
+              const user = new User({
+                  name: 'Sam',
+                  email: 'sam@sam.com',
+                  cart: {
+                      items: []
+                  }
+              });
+              user.save();
+          }
+      })
+      .catch(err => console.log(err))
       app.listen(3000);
   })
-  .catch(err => {
-      console.log(err);
-  })
+  .catch(err => console.log(err))
