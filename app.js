@@ -6,8 +6,6 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-const mongoConnect = require('./util/database');
-
 // To use an HTML templating engine, use app.set() and pass in 'view engine' and a string of the appropriate package. Pug, EJS, and Handlebars are good options. You may also have to import the engine and set a directory for the views to be stored in.
 app.set('view engine', 'ejs');
 app.set('views', 'views');

@@ -1,3 +1,4 @@
+/*
 const path = require('path');
 const fs = require('fs');
 
@@ -68,5 +69,6 @@ static deleteProduct(id, productPrice) {
           }
       })
   }
-
 }
+*/
+
