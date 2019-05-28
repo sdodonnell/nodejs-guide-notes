@@ -75,6 +75,8 @@ exports.postDeleteProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
   Product.find()
+    // Add this method to add related information referenced in another collection. The first argument is the field in the original collection's objects, the second is the fields in the referenced collection's objects we want to receive.
+    // .populate('userId', 'name')
     .then(products => {
       res.render('admin/products', {
         prods: products,

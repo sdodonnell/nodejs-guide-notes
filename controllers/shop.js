@@ -40,6 +40,7 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   req.user
+    // Fetches the cart data for the current user. To be able to call a .then() on it, you have to turn it into a promise with .execPopulate().
     .populate('cart.items.productId')
     .execPopulate()
     .then(user => {

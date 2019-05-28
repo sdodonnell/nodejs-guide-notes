@@ -34,7 +34,7 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 app.use((req, res, next) => {
-    User.findById('5bab316ce0a7c75f783cb8a8')
+    User.findById('5ce461bf22bf3305bea107e9')
       .then(user => {
         req.user = user;
         next();
