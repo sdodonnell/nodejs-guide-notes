@@ -33,6 +33,15 @@ app.use((req, res, next) => {
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
+app.use((req, res, next) => {
+    User.findById('5bab316ce0a7c75f783cb8a8')
+      .then(user => {
+        req.user = user;
+        next();
+      })
+      .catch(err => console.log(err));
+  });
+
 // We can also use a "filter" that prefixes any route with something else by default. This means that to reach any of the admin routes in the browser, we must prefix them with '/admin'.
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
