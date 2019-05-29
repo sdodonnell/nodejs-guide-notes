@@ -13,8 +13,12 @@ exports.postLogin = (req, res, next) => {
     .then(user => {
       req.session.isLoggedIn = true;
       req.session.user = user;
-      console.log(req)
-      res.redirect('/');
+      console.log(req);
+      // Use this method to prevent redirecting before the session has been updated.
+      req.session.save(err => {
+        console.log(err)
+        res.redirect('/');
+      })
     })
     .catch(err => console.log(err))
 }
