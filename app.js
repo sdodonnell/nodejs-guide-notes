@@ -27,7 +27,8 @@ app.use(bodyParser.urlencoded({
 // We can add middleware via express.static() that allows the app access to local files (e.g. stylesheets).
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({
+app.use(
+  session({
     secret: 'my secret', 
     resave: false,
     saveUninitialized: false,
@@ -36,27 +37,30 @@ app.use(session({
 }))
 
 app.use((req, res, next) => {
-    User.findById('5ce460c255c024024ee48355')
+    if (!req.session.user) {
+      return next();
+    }
+    User.findById(req.session.user._id)
       .then(user => {
-         req.user = user;
-         next();
+          req.user = user;
+          next();
       })
       .catch(err => console.log(err))
-});
+})
 
 // We can plug in other routes using app.use() and passing in an exported module from another file. Make sure to import the files and save them as variables.
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth')
 
-app.use((req, res, next) => {
-    User.findById('5ce461bf22bf3305bea107e9')
-      .then(user => {
-        req.user = user;
-        next();
-      })
-      .catch(err => console.log(err));
-  });
+// app.use((req, res, next) => {
+//     User.findById('5ce461bf22bf3305bea107e9')
+//       .then(user => {
+//         req.user = user;
+//         next();
+//       })
+//       .catch(err => console.log(err));
+//   });
 
 // We can also use a "filter" that prefixes any route with something else by default. This means that to reach any of the admin routes in the browser, we must prefix them with '/admin'.
 app.use('/admin', adminRoutes);
