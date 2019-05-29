@@ -1,10 +1,17 @@
-const http = require('http');
+// const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
+const MONGODB_URI = 'mongodb+srv://sam:zJLzyObtqzGvBGsK@cluster0-vjiz9.mongodb.net/test?retryWrites=true'
 
 const app = express();
+const store = new MongoDBStore({
+    uri: MONGODB_URI,
+    collection: 'sessions'
+});
 
 const User = require('./models/user');
 
@@ -20,6 +27,14 @@ app.use(bodyParser.urlencoded({
 // We can add middleware via express.static() that allows the app access to local files (e.g. stylesheets).
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+    secret: 'my secret', 
+    resave: false,
+    saveUninitialized: false,
+    store,
+    // cookie: {}
+}))
+
 app.use((req, res, next) => {
     User.findById('5ce460c255c024024ee48355')
       .then(user => {
@@ -32,6 +47,7 @@ app.use((req, res, next) => {
 // We can plug in other routes using app.use() and passing in an exported module from another file. Make sure to import the files and save them as variables.
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth')
 
 app.use((req, res, next) => {
     User.findById('5ce461bf22bf3305bea107e9')
@@ -45,6 +61,7 @@ app.use((req, res, next) => {
 // We can also use a "filter" that prefixes any route with something else by default. This means that to reach any of the admin routes in the browser, we must prefix them with '/admin'.
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes)
 
 // We can set up a handler for a 404 error by using res.send() with a "Page not found" element, and potentially chaining .status(404) in between. UPDATE: Use .sendFile() to send an HTML instead of raw HTML.
 /*
@@ -65,7 +82,7 @@ const errorController = require('./controllers/error');
 
 app.use(errorController.get404);
 
-mongoose.connect('mongodb+srv://sam:zJLzyObtqzGvBGsK@cluster0-vjiz9.mongodb.net/test?retryWrites=true')
+mongoose.connect(MONGODB_URI)
   .then(result => {
       User.findOne().then(user => {
           if (!user) {
