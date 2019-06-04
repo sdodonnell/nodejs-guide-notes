@@ -39,6 +39,14 @@ app.use(
 }))
 
 app.use(csrfProtection);
+
+// This middleware lets us include information in every rendered view.
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
+})
+
 // We can plug in other routes using app.use() and passing in an exported module from another file. Make sure to import the files and save them as variables.
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
