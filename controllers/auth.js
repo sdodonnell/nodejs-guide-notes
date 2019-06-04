@@ -10,16 +10,32 @@ exports.getLogin = (req, res, next) => {
 }
 
 exports.postLogin = (req, res, next) => {
-  User.findById('5ce461bf22bf3305bea107e9')
+  const email = req.body.email;
+  const password = req.body.password;
+  User.findOne({ email })
     .then(user => {
-      req.session.isLoggedIn = true;
-      req.session.user = user;
-      console.log(req);
-      // Use this method to prevent redirecting before the session has been updated.
-      req.session.save(err => {
-        console.log(err)
-        res.redirect('/');
-      })
+      if (!user) {
+        return res.redirect('/login')
+      }
+      bcrypt
+        .compare(password, user.password)
+        .then(didMatch => {
+          if (didMatch) {
+            req.session.isLoggedIn = true;
+            req.session.user = user;
+            // Use this method to prevent redirecting before the session has been updated.
+            return req.session.save(err => {
+              console.log(err)
+              res.redirect('/');
+            });
+          }
+          res.redirect('/login');
+        })
+        .catch(err => {
+          console.log(err);
+          res.redirect('/login');
+        })
+
     })
     .catch(err => console.log(err))
 }
@@ -49,16 +65,18 @@ exports.postSignup = (req, res, next) => {
       if (userDoc) {
         return res.redirect('/signup');
       }
-      return bcrypt.hash(password, 12);
+      return bcrypt
+        .hash(password, 12)
+        .then(hashedPassword => {
+          const user = new User({
+            email,
+            password: hashedPassword,
+            cart: { items: [] }
+          });
+          return user.save();
+        })
+        .then(result => res.redirect('/login'))
     })
-    .then(hashedPassword => {
-      const user = new User({
-        email,
-        password: hashedPassword,
-        cart: { items: [] }
-      });
-      return user.save();
-    })
-    .then(result => res.redirect('/login'))
+
     .catch(err => console.log(err))
 };
