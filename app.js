@@ -36,18 +36,6 @@ app.use(
     // cookie: {}
 }))
 
-app.use((req, res, next) => {
-    if (!req.session.user) {
-      return next();
-    }
-    User.findById(req.session.user._id)
-      .then(user => {
-          req.user = user;
-          next();
-      })
-      .catch(err => console.log(err))
-})
-
 // We can plug in other routes using app.use() and passing in an exported module from another file. Make sure to import the files and save them as variables.
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -87,20 +75,5 @@ const errorController = require('./controllers/error');
 app.use(errorController.get404);
 
 mongoose.connect(MONGODB_URI)
-  .then(result => {
-      User.findOne().then(user => {
-          if (!user) {
-              const user = new User({
-                  name: 'Sam',
-                  email: 'sam@sam.com',
-                  cart: {
-                      items: []
-                  }
-              });
-              user.save();
-          }
-      })
-      .catch(err => console.log(err))
-      app.listen(3000);
-  })
-  .catch(err => console.log(err))
+
+app.listen(3000);
