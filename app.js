@@ -7,6 +7,7 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const MONGODB_URI = 'mongodb+srv://sam:zJLzyObtqzGvBGsK@cluster0-vjiz9.mongodb.net/test?retryWrites=true'
 const csrf = require('csurf');
+const flash = require('connect-flash');
 
 const app = express();
 const store = new MongoDBStore({
@@ -39,6 +40,7 @@ app.use(
 }))
 
 app.use(csrfProtection);
+app.use(flash());
 
 // This middleware lets us include information in every rendered view.
 app.use((req, res, next) => {
